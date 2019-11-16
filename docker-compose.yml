@@ -9,3 +9,5 @@ services:
     ports:
       - "110:110"
       - "143:143"
+    volumes:
+      - ./docker/email/dovecot.conf:/etc/dovecot/dovecot.conf 
