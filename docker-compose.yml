@@ -1,0 +1,11 @@
+version: '3'
+services:
+  ssh:
+    build: docker/ssh
+    ports:
+      - "22:22"
+  email:
+    build: docker/email
+    ports:
+      - "110:110"
+      - "143:143"
