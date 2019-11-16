@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net"
 	"sync"
 	"time"
@@ -23,7 +22,6 @@ func dialHost(host string) (err error) {
 
 func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, host string, user string, password string) {
 	defer wg.Done()
-	fmt.Printf("%s -> %s\n", user, password)
 	c, err := pop3.Dial(host)
 	if err != nil {
 		<-throttler
@@ -31,7 +29,7 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, host string, user str
 	}
 	err = c.Auth(user, password)
 	if err == nil {
-		log.Info(user, password, "was found")
+		log.Info(user, ":", password, " was found")
 	}
 	defer c.Quit()
 
@@ -40,7 +38,6 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, host string, user str
 
 func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, host string, user string, password string) {
 	defer wg.Done()
-	fmt.Printf("%s -> %s\n", user, password)
 	c, err := client.Dial(host)
 	if err != nil {
 		<-throttler
@@ -48,7 +45,7 @@ func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, host string, user str
 	}
 	err = c.Login(user, password)
 	if err == nil {
-		log.Info(user, password, "was found")
+		log.Info(user, ":", password, " was found")
 	}
 	defer c.Logout()
 
