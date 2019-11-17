@@ -3,20 +3,26 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12.12
+    steps:
+      - checkout
+      - run: make test
+      - run: make all
   test:
     machine: true
     working_repository: ~/repo
     steps:
       - checkout
       - run: docker-compose up -d
-      - run: docker-compose exec runner make test
-  build:
-    docker:
-      # specify the version
-      - image: circleci/golang:1.12.12
-   steps:
-      - checkout
+      - run: docker-compose exec runner bash -c "cd /brucutu && make test"
 
-      # specify any bash command here prefixed with `run: `
-      - run: make test
-      - run: make all
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test

@@ -2,6 +2,12 @@ version: '3'
 services:
   runner:
     image: golang:1.12
+    volumes: 
+      - .:/brucutu
+    entrypoint:
+      - tail 
+      - -f 
+      - /dev/null
   ssh:
     build: docker/ssh
     ports:
