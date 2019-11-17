@@ -11,7 +11,7 @@ services:
   ssh:
     build: docker/ssh
     ports:
-      - "22:22"
+      - "2222:22"
   email:
     build: docker/email
     ports:
