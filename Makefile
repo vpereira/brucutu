@@ -1,7 +1,7 @@
 all: deps
-	go build -o build/brucutu
+	go build -v -o build/brucutu
 deps:
 	go get -d -v ./...
 
 test: deps
-	go test -v ./..
+	go test -v 
