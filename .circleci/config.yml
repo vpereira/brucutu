@@ -21,8 +21,5 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go get "github.com/bytbox/go-pop3"
-      - run: go get "github.com/emersion/go-imap/client"
-      - run: go get "github.com/sirupsen/logrus"
-      - run: go get "golang.org/x/crypto/ssh"
-      - run: go test -v ./...
+      - run: make test
+      - run: make all
