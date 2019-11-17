@@ -15,6 +15,7 @@ jobs:
     working_repository: ~/repo
     steps:
       - checkout
+      - run: docker-compose build
       - run: docker-compose up -d
       - run: docker-compose exec runner bash -c "cd /brucutu && make test"
 
