@@ -75,10 +75,16 @@ func main() {
 	}
 
 	var throttler = make(chan int, *cli.concurrency)
-	host := fmt.Sprintf("%s:%d", myURL.Host, SupportedProtocols[myURL.Scheme])
+
+	var host string
+	if *cli.alternativePort != 0 {
+		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.alternativePort)
+	} else {
+		host = fmt.Sprintf("%s:%d", myURL.Host, SupportedProtocols[myURL.Scheme])
+	}
 	// test connection
 	if err := dialHost(host); err != nil {
-		log.Fatal("Couldn't connect to host, exiting.")
+		log.Fatal("Couldn't connect to host", host, " exiting.")
 		os.Exit(1)
 	}
 
