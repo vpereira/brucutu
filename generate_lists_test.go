@@ -24,7 +24,7 @@ func TestGenerateLists(t *testing.T) {
 	if error != nil {
 		t.Errorf("user list generation failed")
 	}
-	if len(ul) != 2 {
+	if len(ul) != 3 {
 		t.Errorf("user list size is wrong")
 	}
 	pl, error := generatePasswordList(cli)
@@ -32,7 +32,7 @@ func TestGenerateLists(t *testing.T) {
 	if error != nil {
 		t.Errorf("user list generation failed")
 	}
-	if len(pl) != 2 {
+	if len(pl) != 5 {
 		t.Errorf("user list size is wrong")
 	}
 }
