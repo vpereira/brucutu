@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"sync"
 	"time"
 
 	"github.com/bytbox/go-pop3"
 	"github.com/emersion/go-imap/client"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -20,7 +20,7 @@ func dialHost(host string) (err error) {
 	return
 }
 
-func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, host string, user string, password string) {
+func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
 	defer wg.Done()
 	c, err := pop3.Dial(host)
 	if err != nil {
@@ -29,14 +29,14 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, host string, user str
 	}
 	err = c.Auth(user, password)
 	if err == nil {
-		log.Info(user, ":", password, " was found")
+		output <- fmt.Sprintf("%s:%s", user, password)
 	}
 	defer c.Quit()
 
 	<-throttler
 }
 
-func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, host string, user string, password string) {
+func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
 	defer wg.Done()
 	c, err := client.Dial(host)
 	if err != nil {
@@ -45,13 +45,13 @@ func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, host string, user str
 	}
 	err = c.Login(user, password)
 	if err == nil {
-		log.Info(user, ":", password, " was found")
+		output <- fmt.Sprintf("%s:%s", user, password)
 	}
 	defer c.Logout()
 
 	<-throttler
 }
-func connectSSH(wg *sync.WaitGroup, throttler <-chan int, host string, user string, password string) {
+func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
 	defer wg.Done()
 
 	sshConfig := &ssh.ClientConfig{
@@ -70,7 +70,7 @@ func connectSSH(wg *sync.WaitGroup, throttler <-chan int, host string, user stri
 		<-throttler
 		return
 	}
-	log.Info(user, ":", password, " was found")
+	output <- fmt.Sprintf("%s:%s", user, password)
 	defer c.Close()
 	<-throttler
 }

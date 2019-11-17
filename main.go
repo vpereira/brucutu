@@ -74,7 +74,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	var throttler = make(chan int, *cli.concurrency)
+	throttler := make(chan int, *cli.concurrency)
+	outputChannel := make(chan string, len(users)*len(passwords))
 
 	var host string
 	if *cli.alternativePort != 0 {
@@ -95,15 +96,23 @@ func main() {
 			wg.Add(1)
 			switch myURL.Scheme {
 			case "pop3":
-				go connectPOP3(&wg, throttler, host, user, password)
+				go connectPOP3(&wg, throttler, outputChannel, host, user, password)
 			case "ssh":
-				go connectSSH(&wg, throttler, host, user, password)
+				go connectSSH(&wg, throttler, outputChannel, host, user, password)
 			case "imap":
-				go connectIMAP(&wg, throttler, host, user, password)
+				go connectIMAP(&wg, throttler, outputChannel, host, user, password)
 			default:
 				log.Fatal("not implemented")
 			}
 		}
 	}
 	wg.Wait()
+	close(outputChannel)
+	if len(outputChannel) == 0 {
+		log.Info("No password was found")
+		os.Exit(1)
+	}
+	for elem := range outputChannel {
+		fmt.Println(elem)
+	}
 }
