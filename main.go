@@ -89,7 +89,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	go writeLog(outputChannel, *cli.quitFirstFound)
 	var wg sync.WaitGroup
+
 	for _, user := range users {
 		for _, password := range passwords {
 			throttler <- 0
@@ -107,12 +109,18 @@ func main() {
 		}
 	}
 	wg.Wait()
-	close(outputChannel)
-	if len(outputChannel) == 0 {
-		log.Info("No password was found")
-		os.Exit(1)
-	}
-	for elem := range outputChannel {
-		fmt.Println(elem)
+}
+
+func writeLog(outputChannel chan string, quitFirstFound bool) {
+	for {
+		loginPassword, ok := <-outputChannel
+		if ok {
+			log.Info(loginPassword, " found")
+			if quitFirstFound {
+				os.Exit(0)
+			}
+		} else {
+			break
+		}
 	}
 }

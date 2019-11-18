@@ -13,6 +13,7 @@ type cliArgument struct {
 	supportedProtocols *bool
 	tryLoginReverse    *bool
 	alternativePort    *int
+	quitFirstFound     *bool
 }
 
 func (c *cliArgument) readParameters() {
@@ -26,4 +27,5 @@ func (c *cliArgument) readParameters() {
 	c.supportedProtocols = flag.Bool("m", false, "print the supported protocols")
 	c.tryLoginReverse = flag.Bool("r", false, "try login reverse as password")
 	c.alternativePort = flag.Int("a", 0, "set alternative port for service")
+	c.quitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
 }
