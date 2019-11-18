@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
@@ -27,6 +28,7 @@ func protocolSupported(protocol string) bool {
 }
 
 func main() {
+	runtime.GOMAXPROCS(4)
 	cli := &cliArgument{}
 	cli.readParameters()
 	flag.Parse()
