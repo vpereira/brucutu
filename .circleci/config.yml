@@ -17,8 +17,8 @@ jobs:
       - checkout
       - run: docker-compose build
       - run: docker-compose up -d
-      - run: docker-compose exec runner bash -c "cd /brucutu && make test"
-      - run: docker-compose exec runner bash -c "cd /brucutu && make integration"
+      - run: docker-compose exec runner bash -c "cd /go/src/github.com/vpereira/brucutu && make test"
+      - run: docker-compose exec runner bash -c "cd /go/src/github.com/vpereira/brucutu && make integration"
 
 workflows:
   version: 2
