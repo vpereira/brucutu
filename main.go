@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"runtime"
 	"sync"
 
 	log "github.com/sirupsen/logrus"
@@ -28,7 +27,6 @@ func protocolSupported(protocol string) bool {
 }
 
 func main() {
-	runtime.GOMAXPROCS(4)
 	cli := &cliArgument{}
 	cli.readParameters()
 	flag.Parse()
@@ -77,7 +75,7 @@ func main() {
 	}
 
 	throttler := make(chan int, *cli.concurrency)
-	outputChannel := make(chan string, len(users)*len(passwords))
+	outputChannel := make(chan string)
 
 	var host string
 	if *cli.alternativePort != 0 {
@@ -111,6 +109,7 @@ func main() {
 		}
 	}
 	wg.Wait()
+	close(outputChannel)
 }
 
 func writeLog(outputChannel chan string, quitFirstFound bool) {
