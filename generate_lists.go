@@ -1,11 +1,12 @@
 package main
 
+import "github.com/vpereira/brucutu/internal/util"
 /*
 it tries to read a file assuming that -L <file> or -P <file> were given
 if it returns an error, we try to read the -l <login> or -p <password> options
 */
 func generateUserList(cli *cliArgument) (data []string, err error) {
-	users, err := readFile(*cli.loginList)
+	users, err := util.ReadFile(*cli.loginList)
 
 	if err != nil {
 		if *cli.login != "" {
@@ -16,7 +17,7 @@ func generateUserList(cli *cliArgument) (data []string, err error) {
 }
 
 func generatePasswordList(cli *cliArgument) (data []string, err error) {
-	passwords, err := readFile(*cli.passwordList)
+	passwords, err := util.ReadFile(*cli.passwordList)
 
 	if err != nil {
 		if *cli.password != "" {

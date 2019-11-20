@@ -1,9 +1,9 @@
-package main
+package util
 
 import "testing"
 
 func TestReadFile(t *testing.T) {
-	f, error := readFile("read_file_test.go")
+	f, error := ReadFile("read_file_test.go")
 	if error != nil {
 		t.Errorf("File should be readable")
 	}

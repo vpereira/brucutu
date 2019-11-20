@@ -5,7 +5,7 @@ deps:
 	go get -d -v ./...
 
 test: deps
-	go test -v
+	go test -v ./...
 
 # it runs in the docker-compose environment, runner container
 integration: build

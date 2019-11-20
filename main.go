@@ -7,31 +7,15 @@ import (
 	"sync"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vpereira/brucutu/internal/util"
 )
-
-// SupportedProtocols all our supported protocols
-var SupportedProtocols = map[string]int{
-	"ssh":  22,
-	"pop3": 110,
-	"imap": 143,
-}
-
-func printSupporteProtocols() {
-	fmt.Println(SupportedProtocols)
-}
-
-// convention to write boolean methods?
-func protocolSupported(protocol string) bool {
-	_, ok := SupportedProtocols[protocol]
-	return ok
-}
 
 func main() {
 	cli := &cliArgument{}
 	cli.readParameters()
 	flag.Parse()
 	if *cli.supportedProtocols == true {
-		printSupporteProtocols()
+		util.PrintSupportedProtocols()
 		os.Exit(0)
 	}
 
@@ -48,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !protocolSupported(myURL.Scheme) {
+	if !util.ProtocolSupported(myURL.Scheme) {
 		log.Fatal("Protocol ", myURL.Scheme, " not supported")
 		os.Exit(1)
 	}
@@ -81,10 +65,10 @@ func main() {
 	if *cli.alternativePort != 0 {
 		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.alternativePort)
 	} else {
-		host = fmt.Sprintf("%s:%d", myURL.Host, SupportedProtocols[myURL.Scheme])
+		host = fmt.Sprintf("%s:%d", myURL.Host, util.SupportedProtocols[myURL.Scheme])
 	}
 	// test connection
-	if err := dialHost(host); err != nil {
+	if err := util.DialHost(host); err != nil {
 		log.Fatal("Couldn't connect to host", host, " exiting.")
 		os.Exit(1)
 	}

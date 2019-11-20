@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net"
 	"sync"
 	"time"
 
@@ -10,15 +9,6 @@ import (
 	"github.com/emersion/go-imap/client"
 	"golang.org/x/crypto/ssh"
 )
-
-func dialHost(host string) (err error) {
-	conn, err := net.Dial("tcp", host)
-	if err != nil {
-		return
-	}
-	conn.Close()
-	return
-}
 
 func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
 	defer wg.Done()
