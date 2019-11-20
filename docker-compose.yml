@@ -17,5 +17,9 @@ services:
     ports:
       - "110:110"
       - "143:143"
+      - "993:993"
+      - "995:995"
     volumes:
       - ./docker/email/dovecot.conf:/etc/dovecot/dovecot.conf 
+      - ./docker/email/certificates/key.key:/etc/ssl/private/dovecot.key
+      - ./docker/email/certificates/openssl.crt:/etc/ssl/certs/dovecot.crt
