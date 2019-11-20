@@ -6,6 +6,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12.12
+    working_directory: /go/src/github.com/vpereira/brucutu
     steps:
       - checkout
       - run: make test
