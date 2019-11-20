@@ -1,6 +1,7 @@
 package main
 
 import "github.com/vpereira/brucutu/internal/util"
+
 /*
 it tries to read a file assuming that -L <file> or -P <file> were given
 if it returns an error, we try to read the -l <login> or -p <password> options
