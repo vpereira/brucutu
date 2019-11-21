@@ -1,18 +1,26 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"sync"
 	"time"
 
-	"github.com/bytbox/go-pop3"
 	"github.com/emersion/go-imap/client"
+	"github.com/simia-tech/go-pop3"
 	"golang.org/x/crypto/ssh"
 )
 
-func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
+func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, useTLS bool, host string, user string, password string) {
 	defer wg.Done()
-	c, err := pop3.Dial(host)
+	var c *pop3.Client
+	var err error
+
+	if useTLS {
+		c, err = pop3.Dial(host, pop3.UseTLS(&tls.Config{InsecureSkipVerify: true}))
+	} else {
+		c, err = pop3.Dial(host)
+	}
 	if err != nil {
 		<-throttler
 		return
@@ -26,9 +34,16 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, h
 	<-throttler
 }
 
-func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
+func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, useTLS bool, host string, user string, password string) {
 	defer wg.Done()
-	c, err := client.Dial(host)
+	var c *client.Client
+	var err error
+
+	if useTLS {
+		c, err = client.DialTLS(host, &tls.Config{InsecureSkipVerify: true})
+	} else {
+		c, err = client.Dial(host)
+	}
 	if err != nil {
 		<-throttler
 		return

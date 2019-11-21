@@ -32,9 +32,11 @@ func DialHost(host string) (err error) {
 
 // SupportedProtocols all our supported protocols
 var SupportedProtocols = map[string]int{
-	"ssh":  22,
-	"pop3": 110,
-	"imap": 143,
+	"ssh":   22,
+	"pop3":  110,
+	"imap":  143,
+	"pop3s": 995,
+	"imaps": 993,
 }
 
 //PrintSupportedProtocols can be improved

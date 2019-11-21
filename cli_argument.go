@@ -14,6 +14,7 @@ type cliArgument struct {
 	tryLoginReverse    *bool
 	alternativePort    *int
 	quitFirstFound     *bool
+	useTLS             *bool
 }
 
 func (c *cliArgument) readParameters() {
@@ -28,4 +29,5 @@ func (c *cliArgument) readParameters() {
 	c.tryLoginReverse = flag.Bool("r", false, "try login reverse as password")
 	c.alternativePort = flag.Int("a", 0, "set alternative port for service")
 	c.quitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
+	c.useTLS = flag.Bool("tls", false, "Use SSL/TLS")
 }

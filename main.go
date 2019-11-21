@@ -81,12 +81,12 @@ func main() {
 			throttler <- 0
 			wg.Add(1)
 			switch myURL.Scheme {
-			case "pop3":
-				go connectPOP3(&wg, throttler, outputChannel, host, user, password)
+			case "pop3", "pop3s":
+				go connectPOP3(&wg, throttler, outputChannel, *cli.useTLS, host, user, password)
 			case "ssh":
 				go connectSSH(&wg, throttler, outputChannel, host, user, password)
-			case "imap":
-				go connectIMAP(&wg, throttler, outputChannel, host, user, password)
+			case "imap", "imaps":
+				go connectIMAP(&wg, throttler, outputChannel, *cli.useTLS, host, user, password)
 			default:
 				log.Fatal("not implemented")
 			}
