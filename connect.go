@@ -11,58 +11,66 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, useTLS bool, host string, user string, password string) {
+// ConnectArguments used to bring arguments from CLI
+type ConnectArguments struct {
+	UseTLS   bool
+	Host     string
+	User     string
+	Password string
+}
+
+func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
 	defer wg.Done()
 	var c *pop3.Client
 	var err error
 
-	if useTLS {
-		c, err = pop3.Dial(host, pop3.UseTLS(&tls.Config{InsecureSkipVerify: true}))
+	if ca.UseTLS {
+		c, err = pop3.Dial(ca.Host, pop3.UseTLS(&tls.Config{InsecureSkipVerify: true}))
 	} else {
-		c, err = pop3.Dial(host)
+		c, err = pop3.Dial(ca.Host)
 	}
 	if err != nil {
 		<-throttler
 		return
 	}
-	err = c.Auth(user, password)
+	err = c.Auth(ca.User, ca.Password)
 	if err == nil {
-		output <- fmt.Sprintf("%s:%s", user, password)
+		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	}
 	defer c.Quit()
 
 	<-throttler
 }
 
-func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, useTLS bool, host string, user string, password string) {
+func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
 	defer wg.Done()
 	var c *client.Client
 	var err error
 
-	if useTLS {
-		c, err = client.DialTLS(host, &tls.Config{InsecureSkipVerify: true})
+	if ca.UseTLS {
+		c, err = client.DialTLS(ca.Host, &tls.Config{InsecureSkipVerify: true})
 	} else {
-		c, err = client.Dial(host)
+		c, err = client.Dial(ca.Host)
 	}
 	if err != nil {
 		<-throttler
 		return
 	}
-	err = c.Login(user, password)
+	err = c.Login(ca.User, ca.Password)
 	if err == nil {
-		output <- fmt.Sprintf("%s:%s", user, password)
+		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	}
 	defer c.Logout()
 
 	<-throttler
 }
-func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, host string, user string, password string) {
+func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
 	defer wg.Done()
 
 	sshConfig := &ssh.ClientConfig{
-		User: user,
+		User: ca.User,
 		Auth: []ssh.AuthMethod{
-			ssh.Password(password),
+			ssh.Password(ca.Password),
 		},
 		// it should be configurable
 		Timeout:         5 * time.Second,
@@ -70,12 +78,12 @@ func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, ho
 	}
 	sshConfig.SetDefaults()
 
-	c, err := ssh.Dial("tcp", host, sshConfig)
+	c, err := ssh.Dial("tcp", ca.Host, sshConfig)
 	if err != nil {
 		<-throttler
 		return
 	}
-	output <- fmt.Sprintf("%s:%s", user, password)
+	output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	defer c.Close()
 	<-throttler
 }
