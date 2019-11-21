@@ -73,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	go writeLog(outputChannel, *cli.quitFirstFound)
+	go util.WriteLog(outputChannel, *cli.quitFirstFound)
 	var wg sync.WaitGroup
 
 	for _, user := range users {
@@ -95,18 +95,4 @@ func main() {
 	}
 	wg.Wait()
 	close(outputChannel)
-}
-
-func writeLog(outputChannel chan string, quitFirstFound bool) {
-	for {
-		loginPassword, ok := <-outputChannel
-		if ok {
-			log.Info(loginPassword, " found")
-			if quitFirstFound {
-				os.Exit(0)
-			}
-		} else {
-			break
-		}
-	}
 }

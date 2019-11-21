@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
+// ReadFile trransform string in io
 func ReadFile(f string) (data []string, err error) {
 	b, err := os.Open(f)
 	if err != nil {
@@ -48,4 +51,19 @@ func PrintSupportedProtocols() {
 func ProtocolSupported(protocol string) bool {
 	_, ok := SupportedProtocols[protocol]
 	return ok
+}
+
+// WriteLog goroutine used to log the password found
+func WriteLog(outputChannel chan string, quitFirstFound bool) {
+	for {
+		loginPassword, ok := <-outputChannel
+		if ok {
+			log.Info(loginPassword, " found")
+			if quitFirstFound {
+				os.Exit(0)
+			}
+		} else {
+			break
+		}
+	}
 }
