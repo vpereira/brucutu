@@ -11,24 +11,24 @@ import (
 )
 
 func main() {
-	cli := &cliArgument{}
-	cli.readParameters()
+	cli := &util.CliArgument{}
+	cli.ReadParameters()
 	flag.Parse()
-	if *cli.supportedProtocols == true {
+	if *cli.SupportedProtocols == true {
 		util.PrintSupportedProtocols()
 		os.Exit(0)
 	}
 
 	// url is mandatory
-	if *cli.url == "" {
+	if *cli.URL == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	myURL, err := util.ParseURL(*cli.url)
+	myURL, err := util.ParseURL(*cli.URL)
 
 	if err != nil {
-		log.Fatal(*cli.url, " can't be parsed")
+		log.Fatal(*cli.URL, " can't be parsed")
 		os.Exit(1)
 	}
 
@@ -39,37 +39,37 @@ func main() {
 
 	// you are just allowed to choose one option for login and one option for password
 	// -L and -l or -P and -p aren't allowed at the same time
-	if (*cli.loginList != "" && *cli.login != "") || (*cli.password != "" && *cli.passwordList != "") {
+	if (*cli.LoginList != "" && *cli.Login != "") || (*cli.Password != "" && *cli.PasswordList != "") {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
 	// either use TLS or starttls. Both AFAIC arent to be used together
-	if *cli.startTLS && *cli.useTLS {
+	if *cli.StartTLS && *cli.UseTLS {
 		log.Fatal("starttls and use ssl are mutual exclusive")
 		os.Exit(1)
 	}
 
-	users, err := generateUserList(cli)
+	users, err := util.GenerateUserList(cli)
 
 	if err != nil {
 		log.Fatal("Can't read user list, exiting.")
 		os.Exit(1)
 	}
 
-	passwords, err := generatePasswordList(cli)
+	passwords, err := util.GeneratePasswordList(cli)
 
 	if err != nil {
 		log.Fatal("Can't read password list, exiting.")
 		os.Exit(1)
 	}
 
-	throttler := make(chan int, *cli.concurrency)
+	throttler := make(chan int, *cli.Concurrency)
 	outputChannel := make(chan string)
 
 	var host string
-	if *cli.alternativePort != 0 {
-		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.alternativePort)
+	if *cli.AlternativePort != 0 {
+		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.AlternativePort)
 	} else {
 		host = fmt.Sprintf("%s:%d", myURL.Host, util.SupportedProtocols[myURL.Scheme])
 	}
@@ -79,14 +79,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	go util.WriteLog(outputChannel, *cli.quitFirstFound)
+	go util.WriteLog(outputChannel, *cli.QuitFirstFound)
 	var wg sync.WaitGroup
 
 	for _, user := range users {
 		for _, password := range passwords {
 			throttler <- 0
 			wg.Add(1)
-			ca := ConnectArguments{UseTLS: *cli.useTLS, Host: host, User: user, Password: password}
+			ca := ConnectArguments{UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
 			switch myURL.Scheme {
 			case "pop3", "pop3s":
 				go connectPOP3(&wg, throttler, outputChannel, ca)
