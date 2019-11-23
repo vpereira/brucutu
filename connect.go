@@ -14,6 +14,7 @@ import (
 // ConnectArguments used to bring arguments from CLI
 type ConnectArguments struct {
 	UseTLS   bool
+	StartTLS bool
 	Host     string
 	User     string
 	Password string

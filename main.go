@@ -86,7 +86,7 @@ func main() {
 		for _, password := range passwords {
 			throttler <- 0
 			wg.Add(1)
-			ca := ConnectArguments{UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
+			ca := ConnectArguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
 			switch myURL.Scheme {
 			case "pop3", "pop3s":
 				go connectPOP3(&wg, throttler, outputChannel, ca)
