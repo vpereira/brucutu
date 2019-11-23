@@ -15,6 +15,7 @@ type cliArgument struct {
 	alternativePort    *int
 	quitFirstFound     *bool
 	useTLS             *bool
+	startTLS           *bool
 }
 
 func (c *cliArgument) readParameters() {
@@ -30,4 +31,5 @@ func (c *cliArgument) readParameters() {
 	c.alternativePort = flag.Int("a", 0, "set alternative port for service")
 	c.quitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
 	c.useTLS = flag.Bool("tls", false, "Use SSL/TLS")
+	c.startTLS = flag.Bool("starttls", false, "Use starttls")
 }
