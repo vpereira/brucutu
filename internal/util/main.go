@@ -4,10 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"net/url"
 	"os"
 
 	log "github.com/sirupsen/logrus"
 )
+
+// ParseURL return the parsed url or error
+func ParseURL(u string) (parsedURL *url.URL, err error) {
+	myURL, err := url.Parse(u)
+	if err != nil {
+		return nil, err
+	}
+	return myURL, nil
+}
 
 // ReadFile trransform string in io
 func ReadFile(f string) (data []string, err error) {

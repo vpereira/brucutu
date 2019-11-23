@@ -25,10 +25,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	myURL, err := parseURL(*cli.url)
+	myURL, err := util.ParseURL(*cli.url)
 
 	if err != nil {
-		log.Fatal(*cli.url, "can't be parsed")
+		log.Fatal(*cli.url, " can't be parsed")
 		os.Exit(1)
 	}
 
@@ -41,6 +41,12 @@ func main() {
 	// -L and -l or -P and -p aren't allowed at the same time
 	if (*cli.loginList != "" && *cli.login != "") || (*cli.password != "" && *cli.passwordList != "") {
 		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	// either use TLS or starttls. Both AFAIC arent to be used together
+	if *cli.startTLS && *cli.useTLS {
+		log.Fatal("starttls and use ssl are mutual exclusive")
 		os.Exit(1)
 	}
 
