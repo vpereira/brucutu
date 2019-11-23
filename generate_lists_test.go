@@ -12,8 +12,8 @@ func TestGenerateLists(t *testing.T) {
 	var passwdFile string
 	cli := &cliArgument{}
 	flag.StringVar(&url, "u", "ssh://127.0.0.1", "")
-	flag.StringVar(&userFile, "L", "sample/users.txt", "")
-	flag.StringVar(&passwdFile, "P", "sample/passwd.txt", "")
+	flag.StringVar(&userFile, "L", "samples/users.txt", "")
+	flag.StringVar(&passwdFile, "P", "samples/passwd.txt", "")
 
 	cli.url = &url
 	cli.loginList = &userFile

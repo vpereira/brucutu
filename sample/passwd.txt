@@ -1,5 +1,0 @@
-123
-456
-raspberry
-superpassword
-thepassword
