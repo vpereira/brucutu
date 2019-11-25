@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	cli := &util.CliArgument{}
+	cli := util.NewCliArgument()
+
 	err := cli.ReadParameters()
 
 	if err != nil {

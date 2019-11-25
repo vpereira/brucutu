@@ -23,8 +23,15 @@ type CliArgument struct {
 	StartTLS           *bool
 }
 
-// ReadParameters reads the flags and implement some validation logic
-func (c *CliArgument) ReadParameters() (err error) {
+// NewCliArgument create new CliArgument
+func NewCliArgument() *CliArgument {
+	c := CliArgument{}
+	c.setFlags()
+
+	return &c
+}
+
+func (c *CliArgument) setFlags() {
 	c.URL = flag.String("u", "", "set url")
 	c.Login = flag.String("l", "", "set single login")
 	c.LoginList = flag.String("L", "", "set list of logins")
@@ -38,6 +45,10 @@ func (c *CliArgument) ReadParameters() (err error) {
 	c.QuitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
 	c.UseTLS = flag.Bool("tls", false, "Use SSL/TLS")
 	c.StartTLS = flag.Bool("starttls", false, "Use starttls")
+}
+
+// ReadParameters reads the flags and implement some validation logic
+func (c *CliArgument) ReadParameters() (err error) {
 	flag.Parse()
 
 	// just print the list of supported protocols and exit as successful
