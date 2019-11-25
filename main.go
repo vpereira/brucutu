@@ -12,15 +12,10 @@ import (
 
 func main() {
 	cli := &util.CliArgument{}
-	cli.ReadParameters()
-	flag.Parse()
-	if *cli.SupportedProtocols == true {
-		util.PrintSupportedProtocols()
-		os.Exit(0)
-	}
+	err := cli.ReadParameters()
 
-	// url is mandatory
-	if *cli.URL == "" {
+	if err != nil {
+		log.Fatal(err.Error())
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -34,19 +29,6 @@ func main() {
 
 	if !util.ProtocolSupported(myURL.Scheme) {
 		log.Fatal("Protocol ", myURL.Scheme, " not supported")
-		os.Exit(1)
-	}
-
-	// you are just allowed to choose one option for login and one option for password
-	// -L and -l or -P and -p aren't allowed at the same time
-	if (*cli.LoginList != "" && *cli.Login != "") || (*cli.Password != "" && *cli.PasswordList != "") {
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
-
-	// either use TLS or starttls. Both AFAIC arent to be used together
-	if *cli.StartTLS && *cli.UseTLS {
-		log.Fatal("starttls and use ssl are mutual exclusive")
 		os.Exit(1)
 	}
 
