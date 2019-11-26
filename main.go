@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	myURL, err := util.ParseURL(*cli.URL)
+	myURL, err := cli.ParseURL()
 
 	if err != nil {
 		log.Fatal(*cli.URL, " can't be parsed")

@@ -3,6 +3,7 @@ package util
 import (
 	"errors"
 	"flag"
+	"net/url"
 	"os"
 )
 
@@ -45,6 +46,15 @@ func (c *CliArgument) setFlags() {
 	c.QuitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
 	c.UseTLS = flag.Bool("tls", false, "Use SSL/TLS")
 	c.StartTLS = flag.Bool("starttls", false, "Use starttls")
+}
+
+// ParseURL return the parsed url or error
+func (c *CliArgument) ParseURL() (parsedURL *url.URL, err error) {
+	myURL, err := url.Parse(*c.URL)
+	if err != nil {
+		return nil, err
+	}
+	return myURL, nil
 }
 
 // ReadParameters reads the flags and implement some validation logic
