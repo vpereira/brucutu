@@ -1,15 +1,14 @@
 Brucutu - The bruteforce tool with the coolest test suite
 
 Old problem, new tool. Trying to start a Pet project, basically because even
-if I'm used with, hydra is too 90s for me. Basically I think the CLI is ugly
-(as normally it was in the 90s) and the feature set, small.
+if I'm used with, hydra is so 90s for me. 
 
 ![brucutu](brucutu.jpg)
 
 
 Usage: ./brucutu -h
 
-The flags are some how compatible with hydra, but I kind of give up of that.
+The flags are some how compatible with hydra, but I'm kind of give up on that.
 
 
 TODO:
