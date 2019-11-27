@@ -43,7 +43,7 @@ func main() {
 	passwords, err := util.GeneratePasswordList(cli)
 
 	if err != nil {
-		log.Fatal("Can't read password list, exiting.")
+		log.Fatal("Can't read password list, exiting:", err.Error())
 		os.Exit(1)
 	}
 
@@ -58,11 +58,24 @@ func main() {
 	}
 	// test connection
 	if err := util.DialHost(host); err != nil {
-		log.Fatal("Couldn't connect to host", host, " exiting.")
+		log.Fatal("util.DialHost", err.Error())
 		os.Exit(1)
 	}
 
-	go util.WriteLog(outputChannel, *cli.QuitFirstFound)
+	var outputFile *os.File
+
+	if *cli.OutputFile != "" {
+		outputFile, err := os.Create(*cli.OutputFile)
+
+		if err != nil {
+			log.Fatal("Output file", err.Error())
+			os.Exit(1)
+		}
+
+		defer outputFile.Close()
+	}
+
+	go util.WriteLog(outputChannel, outputFile, *cli.QuitFirstFound)
 	var wg sync.WaitGroup
 
 	for _, user := range users {

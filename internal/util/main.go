@@ -54,11 +54,14 @@ func ProtocolSupported(protocol string) bool {
 }
 
 // WriteLog goroutine used to log the password found
-func WriteLog(outputChannel chan string, quitFirstFound bool) {
+func WriteLog(outputChannel chan string, outputFile *os.File, quitFirstFound bool) {
 	for {
 		loginPassword, ok := <-outputChannel
 		if ok {
 			log.Info(loginPassword, " found")
+			if outputFile != nil {
+				outputFile.WriteString(fmt.Sprintf("%s\n", loginPassword))
+			}
 			if quitFirstFound {
 				os.Exit(0)
 			}
