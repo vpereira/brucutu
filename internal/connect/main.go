@@ -1,4 +1,4 @@
-package main
+package connect
 
 import (
 	"crypto/tls"
@@ -11,8 +11,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// ConnectArguments used to bring arguments from CLI
-type ConnectArguments struct {
+// Arguments used to bring arguments from CLI
+type Arguments struct {
 	UseTLS   bool
 	StartTLS bool
 	Host     string
@@ -20,7 +20,8 @@ type ConnectArguments struct {
 	Password string
 }
 
-func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
+// POP3 Bruteforce
+func POP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Arguments) {
 	defer wg.Done()
 	var c *pop3.Client
 	var err error
@@ -30,6 +31,9 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, c
 	} else {
 		c, err = pop3.Dial(ca.Host)
 	}
+
+	defer c.Quit()
+
 	if err != nil {
 		<-throttler
 		return
@@ -38,12 +42,12 @@ func connectPOP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, c
 	if err == nil {
 		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	}
-	defer c.Quit()
 
 	<-throttler
 }
 
-func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
+// IMAP Bruteforce
+func IMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Arguments) {
 	defer wg.Done()
 	var c *client.Client
 	var err error
@@ -53,19 +57,24 @@ func connectIMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, c
 	} else {
 		c, err = client.Dial(ca.Host)
 	}
+
+	defer c.Logout()
+
 	if err != nil {
 		<-throttler
 		return
 	}
 	err = c.Login(ca.User, ca.Password)
+
 	if err == nil {
 		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	}
-	defer c.Logout()
 
 	<-throttler
 }
-func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca ConnectArguments) {
+
+// SSH bruteforce
+func SSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Arguments) {
 	defer wg.Done()
 
 	sshConfig := &ssh.ClientConfig{
@@ -84,7 +93,7 @@ func connectSSH(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca
 		<-throttler
 		return
 	}
-	output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	defer c.Close()
+	output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
 	<-throttler
 }

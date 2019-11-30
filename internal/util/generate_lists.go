@@ -26,6 +26,7 @@ func generateList(listType string, cli *CliArgument) (data []string, err error) 
 			return []string{*singleValue}, nil
 		}
 	}
+
 	return values, err
 }
 

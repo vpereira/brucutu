@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vpereira/brucutu/internal/connect"
 	"github.com/vpereira/brucutu/internal/util"
 )
 
@@ -75,6 +76,16 @@ func main() {
 		defer outputFile.Close()
 	}
 
+	// invert the logins, i.e foobar, become rabfoo and use it as password
+	if *cli.TryLoginReverse {
+		var reverseValues = make([]string, len(users))
+
+		for _, user := range users {
+			reverseValues = append(reverseValues, util.Reverse(user))
+		}
+		passwords = append(passwords, reverseValues...)
+	}
+
 	go util.WriteLog(outputChannel, outputFile, *cli.QuitFirstFound)
 	var wg sync.WaitGroup
 
@@ -82,14 +93,14 @@ func main() {
 		for _, password := range passwords {
 			throttler <- 0
 			wg.Add(1)
-			ca := ConnectArguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
+			ca := connect.Arguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
 			switch myURL.Scheme {
 			case "pop3", "pop3s":
-				go connectPOP3(&wg, throttler, outputChannel, ca)
+				go connect.POP3(&wg, throttler, outputChannel, ca)
 			case "ssh":
-				go connectSSH(&wg, throttler, outputChannel, ca)
+				go connect.SSH(&wg, throttler, outputChannel, ca)
 			case "imap", "imaps":
-				go connectIMAP(&wg, throttler, outputChannel, ca)
+				go connect.IMAP(&wg, throttler, outputChannel, ca)
 			default:
 				log.Fatal("not implemented")
 			}

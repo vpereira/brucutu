@@ -15,7 +15,6 @@ TODO:
 
     - Better restore option
     - Heuristic switching among protocols to evade monitoring systems
-    - output file
     - parallelism 
     - quiet mode
     - native support to tor with some advanced features
