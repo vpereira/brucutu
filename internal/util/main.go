@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"net/url"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -51,6 +52,17 @@ func PrintSupportedProtocols() {
 func ProtocolSupported(protocol string) bool {
 	_, ok := SupportedProtocols[protocol]
 	return ok
+}
+
+// SetHostName return hostname in the format "host:port"
+func SetHostName(cli *CliArgument, myURL *url.URL) *string {
+	var host string
+	if *cli.AlternativePort != 0 {
+		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.AlternativePort)
+	} else {
+		host = fmt.Sprintf("%s:%d", myURL.Host, SupportedProtocols[myURL.Scheme])
+	}
+	return &host
 }
 
 // WriteLog goroutine used to log the password found

@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"sync"
 
@@ -51,14 +50,10 @@ func main() {
 	throttler := make(chan int, *cli.Concurrency)
 	outputChannel := make(chan string)
 
-	var host string
-	if *cli.AlternativePort != 0 {
-		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.AlternativePort)
-	} else {
-		host = fmt.Sprintf("%s:%d", myURL.Host, util.SupportedProtocols[myURL.Scheme])
-	}
+	host := util.SetHostName(cli, myURL)
+
 	// test connection
-	if err := util.DialHost(host); err != nil {
+	if err := util.DialHost(*host); err != nil {
 		log.Fatal("util.DialHost", err.Error())
 		os.Exit(1)
 	}
@@ -93,7 +88,7 @@ func main() {
 		for _, password := range passwords {
 			throttler <- 0
 			wg.Add(1)
-			ca := connect.Arguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: host, User: user, Password: password}
+			ca := connect.Arguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: *host, User: user, Password: password}
 			switch myURL.Scheme {
 			case "pop3", "pop3s":
 				go connect.POP3(&wg, throttler, outputChannel, ca)
