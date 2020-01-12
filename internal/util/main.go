@@ -34,8 +34,7 @@ func DialHost(host string) (err error) {
 	return
 }
 
-// SupportedProtocols all our supported protocols
-var SupportedProtocols = map[string]int{
+var supportedProtocols = map[string]int{
 	"ssh":   22,
 	"pop3":  110,
 	"imap":  143,
@@ -45,12 +44,12 @@ var SupportedProtocols = map[string]int{
 
 //PrintSupportedProtocols can be improved
 func PrintSupportedProtocols() {
-	fmt.Println(SupportedProtocols)
+	fmt.Println(supportedProtocols)
 }
 
 // ProtocolSupported there is convention to write boolean methods?
 func ProtocolSupported(protocol string) bool {
-	_, ok := SupportedProtocols[protocol]
+	_, ok := supportedProtocols[protocol]
 	return ok
 }
 
@@ -60,7 +59,7 @@ func SetHostName(cli *CliArgument, myURL *url.URL) *string {
 	if *cli.AlternativePort != 0 {
 		host = fmt.Sprintf("%s:%d", myURL.Host, *cli.AlternativePort)
 	} else {
-		host = fmt.Sprintf("%s:%d", myURL.Host, SupportedProtocols[myURL.Scheme])
+		host = fmt.Sprintf("%s:%d", myURL.Host, supportedProtocols[myURL.Scheme])
 	}
 	return &host
 }
