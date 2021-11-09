@@ -3,7 +3,7 @@ services:
   runner:
     image: golang:1.13
     volumes: 
-      - .:/go/src/github.com/vpereira/brucutu
+      - .:/brucutu
     entrypoint:
       - tail 
       - -f 

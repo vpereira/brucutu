@@ -5,8 +5,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.12.12
-    working_directory: /go/src/github.com/vpereira/brucutu
+      - image: circleci/golang:1.13
+    working_repository: ~/repo
     steps:
       - checkout
       - run: make test
@@ -18,8 +18,8 @@ jobs:
       - checkout
       - run: docker-compose build
       - run: docker-compose up -d
-      - run: docker-compose exec runner bash -c "cd /go/src/github.com/vpereira/brucutu && make test"
-      - run: docker-compose exec runner bash -c "cd /go/src/github.com/vpereira/brucutu && make integration"
+      - run: docker-compose exec runner bash -c "cd /brucutu && make test"
+      - run: docker-compose exec runner bash -c "cd /brucutu && make integration"
 
 workflows:
   version: 2
