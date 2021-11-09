@@ -2,8 +2,7 @@ build: deps
 	go build -v -o build/brucutu
 	
 deps:
-	go get -d -v ./...
-
+	go mod tidy
 test: deps
 	go test -v ./...
 
