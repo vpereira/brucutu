@@ -14,10 +14,10 @@ TODO:
 
     - Better restore option
     - Heuristic switching among protocols to evade monitoring systems
-    - parallelism 
-    - quiet mode
-    - add more protocols
-    - connect to graphite and maybe grafana to better monitoring
+    - Parallelism 
+    - Quiet mode
+    - Add more protocols
+    - Send metrics to Prometheus
 
 
 Status:
