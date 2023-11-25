@@ -4,6 +4,7 @@ services:
     image: golang:1.19
     volumes: 
       - .:/brucutu
+    working_dir: /brucutu
     entrypoint:
       - tail 
       - -f 

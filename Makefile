@@ -1,3 +1,5 @@
+.PHONY: build deps test integration
+
 build: 
 	go build -v -o build/brucutu
 deps:
