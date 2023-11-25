@@ -8,7 +8,7 @@ jobs:
     container: 
       image: golang:1.19
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run make test
         run: make test
       - name: Run make build
@@ -21,7 +21,7 @@ jobs:
         image: docker:19.03.12
         options: --privileged
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build the Docker images
         run: docker-compose build
       - name: Run containers in the background
