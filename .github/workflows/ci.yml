@@ -26,6 +26,8 @@ jobs:
         run: docker-compose build
       - name: Run containers in the background
         run: docker-compose up -d
+      - name: build brucutu
+        run: docker-compose exec -T runner bash -c "cd /brucutu && make build"
       - name: Execute tests in runner container
         run: docker-compose exec -T runner bash -c "cd /brucutu && make test"
       - name: Execute integration tests in runner container
