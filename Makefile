@@ -2,7 +2,7 @@ build:
 	go build -v -o build/brucutu
 deps:
 	go mod tidy
-test: deps
+test: 
 	go test -v ./...
 
 # it runs in the docker-compose environment, runner container
