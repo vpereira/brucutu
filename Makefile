@@ -1,6 +1,8 @@
 .PHONY: build deps test integration
 
 build: 
+	# workaround to avoid the error: fatal: detected dubious ownership in repository at '/__w/brucutu/brucutu'
+	git config --global --add safe.directory /__w/brucutu/brucutu
 	go build -v -o build/brucutu
 deps:
 	go mod tidy
