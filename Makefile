@@ -1,6 +1,5 @@
-build: deps
+build: 
 	go build -v -o build/brucutu
-	
 deps:
 	go mod tidy
 test: deps
