@@ -2,7 +2,9 @@ package connect
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"fmt"
+	"net/http"
 	"sync"
 	"time"
 
@@ -18,6 +20,45 @@ type Arguments struct {
 	Host     string
 	User     string
 	Password string
+}
+
+// HTTP Basic Auth Bruteforce
+func HTTPBasicAuth(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Arguments) {
+	defer wg.Done()
+
+	var httpURL string
+	if ca.UseTLS {
+		httpURL = "https://" + ca.Host
+	} else {
+		httpURL = "http://" + ca.Host
+	}
+
+	req, err := http.NewRequest("GET", httpURL, nil)
+	if err != nil {
+		<-throttler
+		return
+	}
+
+	auth := base64.StdEncoding.EncodeToString([]byte(ca.User + ":" + ca.Password))
+	req.Header.Add("Authorization", "Basic "+auth)
+
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		<-throttler
+		return
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
+	}
+
+	<-throttler
 }
 
 // POP3 Bruteforce

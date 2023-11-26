@@ -1,4 +1,4 @@
-.PHONY: build deps test integration
+.PHONY: build deps test integration fmt
 
 build: 
 	# workaround to avoid the error: fatal: detected dubious ownership in repository at '/__w/brucutu/brucutu'
@@ -9,6 +9,9 @@ deps:
 	go mod tidy
 test: 
 	go test -v ./...
+
+fmt:
+	go fmt ./...
 
 # it runs in the docker-compose environment, runner container
 integration: build

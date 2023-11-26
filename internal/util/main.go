@@ -42,7 +42,7 @@ var supportedProtocols = map[string]int{
 	"imaps": 993,
 }
 
-//PrintSupportedProtocols can be improved
+// PrintSupportedProtocols can be improved
 func PrintSupportedProtocols() {
 	fmt.Println(supportedProtocols)
 }

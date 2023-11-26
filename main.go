@@ -90,6 +90,8 @@ func main() {
 			wg.Add(1)
 			ca := connect.Arguments{StartTLS: *cli.StartTLS, UseTLS: *cli.UseTLS, Host: *host, User: user, Password: password}
 			switch myURL.Scheme {
+			case "http", "https":
+				go connect.HTTPBasicAuth(&wg, throttler, outputChannel, ca)
 			case "pop3", "pop3s":
 				go connect.POP3(&wg, throttler, outputChannel, ca)
 			case "ssh":
