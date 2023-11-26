@@ -8,6 +8,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jlaffaye/ftp"
+
 	"github.com/emersion/go-imap/client"
 	"github.com/simia-tech/go-pop3"
 	"golang.org/x/crypto/ssh"
@@ -20,6 +22,27 @@ type Arguments struct {
 	Host     string
 	User     string
 	Password string
+}
+
+// FTPBruteforce tries to authenticate against an FTP server.
+func FTP(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Arguments) {
+	defer wg.Done()
+
+	// Dial the FTP server
+	c, err := ftp.Dial(ca.Host, ftp.DialWithTimeout(5*time.Second))
+	if err != nil {
+		<-throttler
+		return
+	}
+	defer c.Quit()
+
+	// Try to login
+	err = c.Login(ca.User, ca.Password)
+	if err == nil {
+		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
+	}
+
+	<-throttler
 }
 
 // HTTP Basic Auth Bruteforce

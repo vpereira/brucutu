@@ -35,6 +35,7 @@ func DialHost(host string) (err error) {
 }
 
 var supportedProtocols = map[string]int{
+	"ftp":   21,
 	"ssh":   22,
 	"pop3":  110,
 	"imap":  143,
