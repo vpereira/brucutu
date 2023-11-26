@@ -40,6 +40,8 @@ var supportedProtocols = map[string]int{
 	"imap":  143,
 	"pop3s": 995,
 	"imaps": 993,
+	"http":  80,
+	"https": 443,
 }
 
 // PrintSupportedProtocols can be improved

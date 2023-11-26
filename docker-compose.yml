@@ -9,10 +9,11 @@ services:
       - tail 
       - -f 
       - /dev/null
-  http_basic_auth:
+  httpd:
     build: docker/http_basic_auth
     ports:
-      - "8881:8881"
+      - "80:80"
+      - "443:443"
   ssh:
     build: docker/ssh
     ports:
