@@ -9,6 +9,16 @@ services:
       - tail 
       - -f 
       - /dev/null
+  ftp:
+    image: fauria/vsftpd
+    environment:
+      FTP_USER: foo
+      FTP_PASS: bar
+      PASV_ADDRESS: 127.0.0.1
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+
   httpd:
     build: docker/http_basic_auth
     ports:
