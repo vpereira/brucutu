@@ -1,6 +1,6 @@
 services:
   runner:
-    image: golang:1.21
+    image: golang:1.24
     volumes: 
       - .:/brucutu
     working_dir: /brucutu
