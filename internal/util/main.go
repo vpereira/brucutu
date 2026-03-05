@@ -45,6 +45,7 @@ var supportedProtocols = map[string]int{
 	"https": 443,
 	"ldap":  389,
 	"ldaps": 636,
+	"rdp":   3389,
 }
 
 // PrintSupportedProtocols can be improved

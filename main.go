@@ -29,6 +29,8 @@ func dispatch(scheme string, wg *sync.WaitGroup, throttler chan int, out chan st
 		connect.IMAP(wg, throttler, out, ca)
 	case "ldap", "ldaps":
 		connect.LDAP(wg, throttler, out, ca)
+	case "rdp":
+		connect.RDP(wg, throttler, out, ca)
 	default:
 		log.Fatalf("not implemented: %s", scheme)
 	}
