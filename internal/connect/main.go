@@ -96,12 +96,11 @@ func POP3(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Argum
 		c, err = pop3.Dial(ca.Host)
 	}
 
-	defer c.Quit()
-
 	if err != nil {
 		<-throttler
 		return
 	}
+	defer c.Quit()
 	err = c.Auth(ca.User, ca.Password)
 	if err == nil {
 		output <- fmt.Sprintf("%s:%s", ca.User, ca.Password)
@@ -122,12 +121,11 @@ func IMAP(wg *sync.WaitGroup, throttler <-chan int, output chan string, ca Argum
 		c, err = client.Dial(ca.Host)
 	}
 
-	defer c.Logout()
-
 	if err != nil {
 		<-throttler
 		return
 	}
+	defer c.Logout()
 	err = c.Login(ca.User, ca.Password)
 
 	if err == nil {

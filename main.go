@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"os"
 	"sync"
 
@@ -17,34 +16,28 @@ func main() {
 
 	if err != nil {
 		log.Fatal(err.Error())
-		flag.PrintDefaults()
-		os.Exit(1)
 	}
 
 	myURL, err := cli.ParseURL()
 
 	if err != nil {
 		log.Fatal(*cli.URL, " can't be parsed")
-		os.Exit(1)
 	}
 
 	if !util.ProtocolSupported(myURL.Scheme) {
 		log.Fatal("Protocol ", myURL.Scheme, " not supported")
-		os.Exit(1)
 	}
 
 	users, err := util.GenerateUserList(cli)
 
 	if err != nil {
 		log.Fatal("Can't read user list, exiting.")
-		os.Exit(1)
 	}
 
 	passwords, err := util.GeneratePasswordList(cli)
 
 	if err != nil {
 		log.Fatal("Can't read password list, exiting:", err.Error())
-		os.Exit(1)
 	}
 
 	throttler := make(chan int, *cli.Concurrency)
@@ -55,17 +48,15 @@ func main() {
 	// test connection
 	if err := util.DialHost(*host); err != nil {
 		log.Fatal("util.DialHost", err.Error())
-		os.Exit(1)
 	}
 
 	var outputFile *os.File
 
 	if *cli.OutputFile != "" {
-		outputFile, err := os.Create(*cli.OutputFile)
+		outputFile, err = os.Create(*cli.OutputFile)
 
 		if err != nil {
 			log.Fatal("Output file", err.Error())
-			os.Exit(1)
 		}
 
 		defer outputFile.Close()
@@ -73,7 +64,7 @@ func main() {
 
 	// invert the logins, i.e foobar, become rabfoo and use it as password
 	if *cli.TryLoginReverse {
-		var reverseValues = make([]string, len(users))
+		var reverseValues = make([]string, 0, len(users))
 
 		for _, user := range users {
 			reverseValues = append(reverseValues, util.Reverse(user))

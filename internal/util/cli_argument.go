@@ -68,7 +68,7 @@ func (c *CliArgument) ReadParameters() (err error) {
 	}
 
 	if *c.URL == "" {
-		return errors.New("url taget cannot be empty")
+		return errors.New("url target cannot be empty")
 	}
 	if *c.Login != "" && *c.LoginList != "" {
 		return errors.New("-L and -l are mutually exclusive")
@@ -79,7 +79,7 @@ func (c *CliArgument) ReadParameters() (err error) {
 	}
 
 	if *c.UseTLS && *c.StartTLS {
-		return errors.New("-starttls and -tls are mutally exclusive")
+		return errors.New("-starttls and -tls are mutually exclusive")
 	}
 	return nil
 }
