@@ -3,8 +3,10 @@ package util
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"net/url"
 	"os"
+	"strings"
 )
 
 // CliArgument handles the command arguments
@@ -22,6 +24,8 @@ type CliArgument struct {
 	QuitFirstFound     *bool
 	UseTLS             *bool
 	StartTLS           *bool
+	LDAPEnum           *bool
+	HopProtocols       *string
 }
 
 // NewCliArgument create new CliArgument
@@ -46,6 +50,8 @@ func (c *CliArgument) setFlags() {
 	c.QuitFirstFound = flag.Bool("f", false, "Quit as soon first password was found")
 	c.UseTLS = flag.Bool("tls", false, "Use SSL/TLS")
 	c.StartTLS = flag.Bool("starttls", false, "Use starttls")
+	c.LDAPEnum = flag.Bool("e", false, "Enable LDAP username enumeration pre-step (Active Directory only)")
+	c.HopProtocols = flag.String("H", "", "Comma-separated protocols to hop in round-robin (e.g. ldap,ftp,ssh)")
 }
 
 // ParseURL return the parsed url or error
@@ -81,5 +87,15 @@ func (c *CliArgument) ReadParameters() (err error) {
 	if *c.UseTLS && *c.StartTLS {
 		return errors.New("-starttls and -tls are mutually exclusive")
 	}
+
+	if *c.HopProtocols != "" {
+		for _, proto := range strings.Split(*c.HopProtocols, ",") {
+			proto = strings.TrimSpace(proto)
+			if !ProtocolSupported(proto) {
+				return fmt.Errorf("unsupported protocol in -H: %q", proto)
+			}
+		}
+	}
+
 	return nil
 }

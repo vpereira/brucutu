@@ -43,6 +43,8 @@ var supportedProtocols = map[string]int{
 	"imaps": 993,
 	"http":  80,
 	"https": 443,
+	"ldap":  389,
+	"ldaps": 636,
 }
 
 // PrintSupportedProtocols can be improved
@@ -67,6 +69,11 @@ func SetHostName(cli *CliArgument, myURL *url.URL) *string {
 	return &host
 }
 
+// HostForProtocol returns "host:port" using the default port for the given protocol.
+func HostForProtocol(hostname, scheme string) string {
+	return fmt.Sprintf("%s:%d", hostname, supportedProtocols[scheme])
+}
+
 // WriteLog goroutine used to log the password found
 func WriteLog(outputChannel chan string, outputFile *os.File, quitFirstFound bool) {
 	for {
@@ -74,7 +81,7 @@ func WriteLog(outputChannel chan string, outputFile *os.File, quitFirstFound boo
 		if ok {
 			log.Info(loginPassword, " found")
 			if outputFile != nil {
-				outputFile.WriteString(fmt.Sprintf("%s\n", loginPassword))
+				fmt.Fprintf(outputFile, "%s\n", loginPassword)
 			}
 			if quitFirstFound {
 				os.Exit(0)

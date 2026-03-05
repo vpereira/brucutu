@@ -8,5 +8,9 @@ $BRUCUTU -u pop3://email -L samples/users.txt -P samples/passwd.txt || exit -1
 # Giving false positive
 $BRUCUTU -u http://httpd -l foo -p bar -f || exit -1
 $BRUCUTU -u ftp://ftp -l foo -p bar -f || exit -1
+# LDAP simple bind - full DN
+$BRUCUTU -u ldap://ldap -l "cn=admin,dc=example,dc=org" -p admin -f || exit -1
+# LDAP simple bind - UPN format
+$BRUCUTU -u ldap://ldap -l "admin@example.org" -p admin -f || exit -1
 
 exit 0
