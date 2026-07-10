@@ -1,6 +1,6 @@
 module github.com/vpereira/brucutu
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/emersion/go-imap v1.2.0
@@ -9,7 +9,7 @@ require (
 	github.com/jlaffaye/ftp v0.2.0
 	github.com/simia-tech/go-pop3 v0.0.0-20150626094726-c9c20550a244
 	github.com/sirupsen/logrus v1.8.3
-	golang.org/x/crypto v0.45.0
+	golang.org/x/crypto v0.52.0
 )
 
 require (
@@ -21,6 +21,6 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/icodeface/tls v0.0.0-20190904083142-17aec93c60e5 // indirect
 	github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 )
